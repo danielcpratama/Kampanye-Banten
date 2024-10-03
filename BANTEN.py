@@ -453,7 +453,7 @@ with tab4:
             st.markdown('##### 1. Pilih Analisis')
             
             # Selectbox for Extent subset
-            extent_list = ['se-Kecamatan']
+            extent_list = ['se-Kelurahan']
             extent_analysis = st.selectbox('Skala Analisis', options=extent_list, key='extent3')
             
             # Selectbox for smallest unit
@@ -476,25 +476,32 @@ with tab4:
             city_analysis = st.selectbox('Pilih Kota', options=city_list, key='city3')
 
             # Selectbox for Kecamatan subset
-            if extent_analysis == 'se-Kecamatan':
+            if extent_analysis == 'se-Kelurahan':
                 kec_list = list(base_df[base_df.NAMA_KAB_KOTA == city_analysis].sort_values(by='NAMA_KECAMATAN').NAMA_KECAMATAN.unique())[:3]
             else :
                 kec_list = ['Semua Kecamatan']
             
             kec_analysis = st.selectbox('Pilih Kecamatan', options=kec_list, key='kecamatan3')
             
+            # Selectbox for Kelurahan subset
+            if extent_analysis == 'se-Kelurahan':
+                kel_list = list(base_df[base_df.NAMA_KECAMATAN == kec_analysis].sort_values(by='NAMA_KEL_DESA').NAMA_KEL_DESA.unique())[:3]
+            else :
+                kel_list = ['Semua Kelurahan']
+            
+            kel_analysis = st.selectbox('Pilih Kelurahan', options=kel_list, key='kelurahan3')
             
             
     with colB:
         # import analysis boundary
-        network_geom_URL = f'geom/KECAMATAN_BY_PROVINCE/Banten_KECAMATAN.geojson'
+        network_geom_URL = f'geom/DESA_KELURAHAN_BY_PROVINCE/Banten_DESA_KELURAHAN.geojson'
 
         # point_geom_URL = f'data/POI_sultra.geojson'
 
         try:
             with st.spinner('dicariin dulu ya...'):
                 gdf_network = get_geom(geom_URL=network_geom_URL)
-                gdf_network = gdf_network[gdf_network.NAMA_KECAMATAN == kec_analysis]     
+                gdf_network = gdf_network[gdf_network.NAMA_KEL_DESA == kel_analysis]     
                 gdf_network.KODE_PROVINSI = gdf_network.KODE_PROVINSI.astype(str)
                 
                 with st.spinner('cari titik keramaian...'):
@@ -590,6 +597,10 @@ with tab4:
             
         except:
             st.warning('maaf pencarian gagal, silahkan coba area lain')
+    
+       
+        
+
     
        
         
