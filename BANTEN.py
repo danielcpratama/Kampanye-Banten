@@ -530,8 +530,8 @@ with tab4:
     
                         # Apply the function to each row in gdf_poi
                         gdf_poi['tooltip'] = gdf_poi.apply(create_tooltip, axis=1)
-                    except:
-                        continue
+                except:
+                    continue
                 
 
             data = kota.get_network_centrality(gdf_network)
