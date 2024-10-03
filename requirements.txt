@@ -1,0 +1,23 @@
+pandas == 2.2.2
+geopandas
+numpy == 2.1.1
+folium
+matplotlib
+streamlit == 1.37.0
+streamlit_folium
+fiona
+gcsfs == 2023.9.2
+st-files-connection
+st-gsheets-connection
+git+https://github.com/streamlit/gsheets-connection
+mapclassify
+plotly 
+google.cloud
+datetime
+bcrypt
+selenium
+geckodriver
+ChromeDriver
+webdriver-manager
+pydeck
+osmnx
