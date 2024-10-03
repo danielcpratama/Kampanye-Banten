@@ -504,31 +504,34 @@ with tab4:
                 gdf_network = gdf_network[gdf_network.NAMA_KEL_DESA == kel_analysis]     
                 gdf_network.KODE_PROVINSI = gdf_network.KODE_PROVINSI.astype(str)
                 
-                with st.spinner('cari titik keramaian...'):
-                    # Fetch POIs as in previous example
-                    tags = {
-                        'amenity': True,
-                        'shop': True,  # Fetch all types of shops
-                        'leisure': ['park', 'fitness_centre', 'sports_centre', 'swimming_pool'],
-                        'tourism': ['museum', 'attraction', 'gallery', 'zoo'],
-                        'railway': 'station'
-                    }
-                    
-                    gdf_poi = ox.geometries_from_polygon(gdf_network.to_crs(4326).geometry.item(), tags)
-                    gdf_poi = gdf_poi[gdf_poi.geometry.type == 'Point'].reset_index()
-                    gdf_poi = gdf_poi.to_crs(4326)
-                    # Extract longitude and latitude for Pydeck
-                    gdf_poi["Longitude"] = gdf_poi.geometry.x
-                    gdf_poi["Latitude"] = gdf_poi.geometry.y
-                    
-                    # create tooltip
-                    def create_tooltip(row):
-                        values = [row['name'], row['name:en'], row['amenity'], row['shop']]
-                        filtered_values = [str(value) for value in values if value is not None and pd.notna(value)]
-                        return ', '.join(filtered_values)
-
-                    # Apply the function to each row in gdf_poi
-                    gdf_poi['tooltip'] = gdf_poi.apply(create_tooltip, axis=1)
+                try:
+                    with st.spinner('cari titik keramaian...'):
+                        # Fetch POIs as in previous example
+                        tags = {
+                            'amenity': True,
+                            'shop': True,  # Fetch all types of shops
+                            'leisure': ['park', 'fitness_centre', 'sports_centre', 'swimming_pool'],
+                            'tourism': ['museum', 'attraction', 'gallery', 'zoo'],
+                            'railway': 'station'
+                        }
+                        
+                        gdf_poi = ox.geometries_from_polygon(gdf_network.to_crs(4326).geometry.item(), tags)
+                        gdf_poi = gdf_poi[gdf_poi.geometry.type == 'Point'].reset_index()
+                        gdf_poi = gdf_poi.to_crs(4326)
+                        # Extract longitude and latitude for Pydeck
+                        gdf_poi["Longitude"] = gdf_poi.geometry.x
+                        gdf_poi["Latitude"] = gdf_poi.geometry.y
+                        
+                        # create tooltip
+                        def create_tooltip(row):
+                            values = [row['name'], row['name:en'], row['amenity'], row['shop']]
+                            filtered_values = [str(value) for value in values if value is not None and pd.notna(value)]
+                            return ', '.join(filtered_values)
+    
+                        # Apply the function to each row in gdf_poi
+                        gdf_poi['tooltip'] = gdf_poi.apply(create_tooltip, axis=1)
+                    except:
+                        continue
                 
 
             data = kota.get_network_centrality(gdf_network)
